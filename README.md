@@ -1,4 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🥤 Suyon Vending Machine App
+
+A Next.js (TypeScript) simulation of a vending machine that supports **Coke**, **Water**, and **Coffee** purchases.  
+The app features a realistic UI with clickable item buttons, cash/card payments, change calculation, timeouts for inactivity, and modal-based confirmation dialogs.
+
+---
+
+## 📦 Version
+
+**v1.0.0**  
+Tested with:
+
+- **Node.js** 20.x
+- **npm** 10.x
+- **Next.js** 15.x
+- **React** 19.x
+- **TypeScript** 5.x
+
+---
+
+## 🚀 Features
+
+- **Item Selection**
+  - Only in-stock items can be selected.
+  - Out-of-stock items are visually marked and disabled.
+- **Payment Methods**
+  - Cash: Enter paid amount, auto-calculates change (with available coin stock check).
+  - Card: Simulated authorization and decline handling.
+- **Timeouts**
+  - 10-second inactivity reset after item selection.
+  - 5-second inactivity reset after card decline.
+  - 5-second auto-dismiss for confirmation prompts.
+- **Exception Handling**
+  - Payment cancellation (by user).
+  - No change available (cash only).
+  - Payment declines with retry/cancel.
+  - Hardware errors (e.g., dispenser jam).
+
+---
+
+## 🖥️ Requirements
+
+- **Node.js** ≥ 18
+- **npm** ≥ 9  
+  (Or use **pnpm**/**yarn** if preferred.)
+
+---
+
+## 📂 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/suyon-vending-machine.git
+cd suyon-vending-machine
+```
 
 ## Getting Started
 
@@ -15,22 +70,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
