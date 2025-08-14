@@ -1,6 +1,7 @@
 "use client";
 
 import ItemButton from "@/components/ItemButton";
+import { items } from "@/items";
 import { Change, Item } from "@/types";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -10,11 +11,8 @@ const steps = [
   { id: 1, desc: "Select your payment method below:" },
 ];
 
-const items = [
-  { sku: "COLA", name: "Coca Cola", price: 1100, inStock: true },
-  { sku: "WATER", name: "Nobrand Water", price: 600, inStock: true },
-  { sku: "COFFEE", name: "Nobrand Coffee", price: 700, inStock: true },
-];
+const SELECT_TIMEOUT_MS = 10_000;
+const CONFIRM_TIMEOUT_MS = 5_000;
 
 export default function Home() {
   const [step, setStep] = useState(steps[0]);
@@ -39,7 +37,7 @@ export default function Home() {
       const timeout = setTimeout(() => {
         setSelectedItem(undefined);
         setStep(steps[0]);
-      }, 10000);
+      }, SELECT_TIMEOUT_MS);
       return () => clearTimeout(timeout);
     }
   }, [selectedItem, selectedPayment]);
@@ -73,7 +71,7 @@ export default function Home() {
           resolverRef.current = null;
           r(false);
         }
-      }, 5000);
+      }, CONFIRM_TIMEOUT_MS);
     });
   }
 
@@ -84,11 +82,13 @@ export default function Home() {
   }
 
   const handlePaymentClick = async (paymentMethod: "cash" | "card") => {
+    if (!selectedItem) return;
+
     setSelectedPayment(paymentMethod);
     let paidAmount = 0;
     if (paymentMethod === "cash") {
       const userInput = prompt(
-        `Please insert cash for ${selectedItem?.name} (${selectedItem?.price} won)`
+        `Please insert cash for ${selectedItem.name} (${selectedItem.price} won)`
       );
       if (!userInput) {
         toast("Payment canceled");
@@ -101,7 +101,7 @@ export default function Home() {
         return;
       }
       paidAmount = Number(userInput);
-      if (paidAmount < selectedItem!.price) {
+      if (paidAmount < selectedItem.price) {
         toast.error("Insufficient amount — payment refunded");
         resetState();
         return;
@@ -124,13 +124,13 @@ export default function Home() {
 
     const confirmed = await showConfirm(
       `You paid ${
-        paymentMethod === "cash" ? result.paid : selectedItem?.price
+        paymentMethod === "cash" ? result.paid : selectedItem.price
       } won. Do you want to dispense?`
     );
     if (confirmed) {
       if (paymentMethod === "cash") {
         const changeResponse = await fetch(
-          `/api/change-availability?price=${selectedItem?.price}&paid=${result.paid}`
+          `/api/change-availability?price=${selectedItem.price}&paid=${result.paid}`
         ).then((res) => res.json());
         if (!changeResponse.hasChange) {
           await fetch("/api/refund", {
@@ -191,25 +191,27 @@ export default function Home() {
       {selectedItem && (
         <>
           <div className="absolute top-[150px] right-[200px] border-4 border-yellow-300 w-[110px] h-[410px]"></div>
-          <div
+          <button
             className="absolute top-[200px] right-[220px] w-[75px] h-[100px] cursor-pointer"
             title="Card"
+            aria-label="Pay with card"
             onClick={() => handlePaymentClick("card")}
-          ></div>
-          <div
+          ></button>
+          <button
             className="absolute top-[320px] right-[220px] w-[75px] h-[90px] cursor-pointer"
             title="Cash"
+            aria-label="Pay with cash"
             onClick={() => handlePaymentClick("cash")}
-          ></div>
-          <div
+          ></button>
+          <button
             className="absolute top-[430px] right-[230px] w-[50px] h-[85px] cursor-pointer"
             title="Cash"
+            aria-label="Pay with cash"
             onClick={() => handlePaymentClick("cash")}
-          ></div>
-          <div className="absolute top-1/2 left-[400px] text-black text-xl">
+          ></button>
+          <button className="absolute top-1/2 left-[400px] text-black text-xl">
             selected: {selectedItem?.sku}
-          </div>
-          `
+          </button>
         </>
       )}
       {confirmState.visible && (
